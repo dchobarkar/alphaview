@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import LinkButtonBox from "@/app/ui/components/LinkButtonBox/LinkButtonBox";
 import { technicalIndicatorsList } from "@/app/ui/utils/constants/apiLists";
 
@@ -15,6 +16,10 @@ const Page = () => {
       <LinkButtonBox links={technicalIndicatorsList} />
     </div>
   );
+=======
+const Page = () => {
+  return <div>This is core stock api</div>;
+>>>>>>> main
 };
 
 export default Page;

@@ -6,10 +6,10 @@ const Page = () => {
     <div>
       <h1>Durables</h1>
       <p>
-        This API returns the monthly manufacturers' new orders of durable goods
+        This API returns the monthly manufacturers&apos; new orders of durable goods
         in the United States.
         <br />
-        Source: U.S. Census Bureau, Manufacturers' New Orders: Durable Goods,
+        Source: U.S. Census Bureau, Manufacturers&apos; New Orders: Durable Goods,
         retrieved from FRED, Federal Reserve Bank of St. Louis
         (https://fred.stlouisfed.org/series/UMDMNO). This data feed uses the
         FRED® API but is not endorsed or certified by the Federal Reserve Bank

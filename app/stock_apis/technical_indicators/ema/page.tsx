@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import InputBox from "@/app/ui/components/InputBox/InputBox";
 import { technocalIndicatorsInputs } from "@/app/ui/utils/constants/inputLists";
 
@@ -22,6 +23,10 @@ const Page = () => {
       </form>
     </div>
   );
+=======
+const Page = () => {
+  return <div>This is core stock api</div>;
+>>>>>>> main
 };
 
 export default Page;
