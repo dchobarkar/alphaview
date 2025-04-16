@@ -1,30 +1,34 @@
-import InputBox from "@/app/ui/components/InputBox/InputBox";
-import { coreStockAPIsInputs } from "@/app/ui/utils/constants/inputLists";
+import PageLayout from '@/app/ui/components/PageLayout';
+import SectionHeader from '@/app/ui/components/SectionHeader';
+import BackButton from '@/app/ui/components/BackButton';
+import InputBox from '@/app/ui/components/InputBox/InputBox';
+import { coreStockAPIsInputs } from '@/app/ui/utils/constants/inputLists';
 
 const Page = () => {
   return (
-    <div>
-      <h1>Time Series Intraday</h1>
-      <p>
-        This API returns current and 20+ years of historical intraday OHLCV time
-        series of the equity specified, covering pre-market and post-market
-        hours where applicable (e.g., 4:00am to 8:00pm Eastern Time for the US
-        market). You can query both raw (as-traded) and split/dividend-adjusted
-        intraday data from this endpoint. The OHLCV data is sometimes called
-        &quot;candles&quot; in finance literature.
-      </p>
+    <PageLayout>
+      <BackButton
+        href="/stock_apis/core_stock_apis"
+        label="Back to Stock API List"
+      />
 
-      <form className="p-4 space-y-4 bg-gray-100 rounded-lg shadow-md max-w-md mx-auto">
+      <SectionHeader
+        as="h2"
+        title="Time Series Intraday"
+        description="Query pre-market and post-market intraday OHLCV stock data with options for raw or adjusted values. Covers up to 20+ years of history."
+      />
+
+      <form className="p-6 space-y-6 bg-gray-50 rounded-lg shadow max-w-lg mx-auto border">
         <InputBox inputList={coreStockAPIsInputs.intraday} />
 
         <button
           type="submit"
-          className="w-full p-2 bg-blue-600 text-white rounded"
+          className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
         >
-          Submit
+          Get Data
         </button>
       </form>
-    </div>
+    </PageLayout>
   );
 };
 

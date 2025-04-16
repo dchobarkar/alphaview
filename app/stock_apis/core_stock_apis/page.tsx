@@ -1,21 +1,19 @@
-import LinkButtonBox from "@/app/ui/components/LinkButtonBox/LinkButtonBox";
-import { coreStockAPIList } from "@/app/ui/utils/constants/apiLists";
+import PageLayout from '@/app/ui/components/PageLayout';
+import SectionHeader from '@/app/ui/components/SectionHeader';
+import LinkButtonBox from '@/app/ui/components/LinkButtonBox/LinkButtonBox';
+import { coreStockAPIList } from '@/app/ui/utils/constants/apiLists';
 
 const Page = () => {
   return (
-    <div>
-      <h1>Time Series Stock Data APIs</h1>
-
-      <p>
-        This suite of APIs provide global equity data in 4 different temporal
-        resolutions: (1) daily, (2) weekly, (3) monthly, and (4) intraday, with
-        20+ years of historical depth. A lightweight ticker quote endpoint and
-        several utility functions such as ticker search and market open/closure
-        status are also included for your convenience.
-      </p>
+    <PageLayout>
+      <SectionHeader
+        as="h2"
+        title="Time Series Stock Data APIs"
+        description="Explore daily, weekly, monthly, and intraday equity data with 20+ years of historical depth. Includes ticker quotes, search, and market open/close status utilities."
+      />
 
       <LinkButtonBox links={coreStockAPIList} />
-    </div>
+    </PageLayout>
   );
 };
 
