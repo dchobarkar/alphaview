@@ -1,15 +1,20 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-const LinkButtonBox = ({
-  links,
-}: {
-  links: { name: string; href: string }[];
-}) => {
+interface LinkItem {
+  name: string;
+  href: string;
+}
+
+interface LinkButtonBoxProps {
+  links: LinkItem[];
+}
+
+const LinkButtonBox: React.FC<LinkButtonBoxProps> = ({ links }) => {
   return (
-    <div className="m-4">
-      {links.map((link: { name: string; href: string }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
+      {links.map((link) => (
         <Link
-          className="m-2 p-2 bg-white text-black"
+          className="block text-center px-6 py-4 rounded-lg shadow-md bg-white text-black font-medium hover:bg-gray-100 transition-all duration-200 border border-gray-300"
           key={link.name}
           href={link.href}
         >
