@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { FetchStockData } from "./api/route";
+import { useState } from 'react';
+import { FetchStockData } from '../../api/route';
 
 export default async function Page() {
   const stockData = await FetchStockData();
 
-  const metaData = stockData["Meta Data"];
-  const timeSeries = stockData["Time Series (5min)"];
+  const metaData = stockData['Meta Data'];
+  const timeSeries = stockData['Time Series (5min)'];
 
   // Convert time series data to an array
   const stockArray = Object.entries(timeSeries).map(([timestamp, values]) => ({
     timestamp,
-    open: parseFloat(values["1. open"]),
-    high: parseFloat(values["2. high"]),
-    low: parseFloat(values["3. low"]),
-    close: parseFloat(values["4. close"]),
-    volume: parseInt(values["5. volume"], 10),
+    open: parseFloat(values['1. open']),
+    high: parseFloat(values['2. high']),
+    low: parseFloat(values['3. low']),
+    close: parseFloat(values['4. close']),
+    volume: parseInt(values['5. volume'], 10),
   }));
 
   return (
@@ -49,10 +49,10 @@ export default async function Page() {
       </div>
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">
-          Stock Data for {metaData["2. Symbol"]}
+          Stock Data for {metaData['2. Symbol']}
         </h1>
         <p className="mb-4 text-gray-600">
-          Last Updated: {metaData["3. Last Refreshed"]}
+          Last Updated: {metaData['3. Last Refreshed']}
         </p>
 
         <div className="overflow-x-auto">
