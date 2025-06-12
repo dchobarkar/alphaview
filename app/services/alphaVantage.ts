@@ -193,4 +193,10 @@ export class AlphaVantageService {
       series_type: "close",
     });
   }
+
+  async getEconomicIndicator(indicator: string) {
+    return this.fetchData({
+      function: indicator,
+    });
+  }
 }
