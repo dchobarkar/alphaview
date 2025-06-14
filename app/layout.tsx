@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 
 import "./globals.css";
+import Header from "./ui/components/Header";
+import Footer from "./ui/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,7 +37,9 @@ export default function RootLayout({
           antialiased 
           bg-background text-forground font-body`}
       >
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
