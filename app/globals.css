@@ -1,7 +1,29 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+  /* Colors */
+  --color-primary: #1e3a8a; /* Indigo 800 */
+  --color-secondary: #10b981; /* Emerald 500 */
+  --color-accent: #f59e0b; /* Amber 500 */
+  --color-background: #f9fafb; /* Gray 50 */
+  --color-foreground: #111827; /* Gray 900 */
+
+  /* Fonts */
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Montserrat", sans-serif;
+}
+
+/* Base Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }

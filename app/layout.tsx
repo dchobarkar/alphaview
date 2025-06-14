@@ -1,39 +1,44 @@
-import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import type { Metadata } from "next";
+import { Inter, Montserrat } from "next/font/google";
 
-import Header from './ui/components/Header';
-import Footer from './ui/components/Footer';
-import './globals.css';
+import "./globals.css";
+import Header from "./ui/components/Header";
+import Footer from "./ui/components/Footer";
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
 });
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-heading",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: 'AlphaView App',
-  description:
-    'A simple Next.js app to display financial data from Alpha Vantage.',
+  title: "Alpha Vantage Dashboard",
+  description: "Finance dashboard powered by Alpha Vantage APIs",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" className="bg-gray-50">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased text-gray-900 min-h-screen`}
+        className={`
+          ${inter.variable} 
+          ${montserrat.variable} 
+          antialiased 
+          bg-background text-forground font-body`}
       >
         <Header />
-
-        <main>{children}</main>
-
+        {children}
         <Footer />
       </body>
     </html>

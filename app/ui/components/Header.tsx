@@ -1,17 +1,17 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 const Header = () => {
   return (
-    <header className="w-full border-b bg-white py-4 px-6 shadow-sm">
-      <div className="max-w-5xl mx-auto flex items-center justify-between">
+    <header className="w-full border-b bg-accent px-6 py-4 shadow-sm">
+      <div className="mx-auto flex max-w-5xl items-center justify-between">
         <Link
           href="/"
-          className="text-lg font-semibold tracking-tight text-gray-800 hover:underline"
+          className="text-lg font-heading text-foreground font-semibold tracking-tight hover:underline"
         >
           AlphaView
         </Link>
 
-        <span className="text-sm text-gray-400 italic">
+        <span className="text-sm text-gray-500 italic">
           Your AI-powered API explorer
         </span>
       </div>
