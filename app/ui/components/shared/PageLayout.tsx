@@ -1,61 +1,64 @@
 import { JSX, ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface PageLayoutProps {
   children: ReactNode;
   className?: string;
   id?: string;
   as?: keyof JSX.IntrinsicElements;
-  maxWidth?: "default" | "full" | "narrow";
-  padding?: "default" | "none" | "lg";
-  background?: "theme" | "white" | "gray" | "transparent";
+  size?: "sm" | "md" | "lg" | "xl" | "full";
+  padding?: "none" | "sm" | "md" | "lg";
+  background?: "default" | "white" | "gray" | "transparent";
   rounded?: boolean;
   shadow?: boolean;
 }
 
 const PageLayout = ({
   children,
-  className = "",
+  className,
   id,
   as: Component = "section",
-  maxWidth = "default",
-  padding = "default",
-  background = "theme",
+  size = "lg",
+  padding = "md",
+  background = "default",
   rounded = false,
   shadow = false,
 }: PageLayoutProps) => {
-  const maxWidthMap = {
-    default: "max-w-7xl",
-    full: "w-full",
-    narrow: "max-w-3xl",
+  const sizes = {
+    sm: "max-w-3xl",
+    md: "max-w-4xl",
+    lg: "max-w-6xl",
+    xl: "max-w-7xl",
+    full: "max-w-full",
   };
 
   const paddingMap = {
-    default: "px-4 py-8",
     none: "",
-    lg: "px-6 py-12",
+    sm: "px-4 py-4",
+    md: "px-6 py-8",
+    lg: "px-8 py-12",
   };
 
   const backgroundMap = {
-    theme: "bg-background text-foreground",
-    white: "bg-white text-gray-900",
-    gray: "bg-gray-100 text-gray-900",
+    default: "bg-white",
+    white: "bg-white",
+    gray: "bg-gray-50",
     transparent: "",
   };
 
-  const finalClassName = [
-    "mx-auto flex flex-col",
-    maxWidthMap[maxWidth],
-    paddingMap[padding],
-    backgroundMap[background],
-    rounded && "rounded-2xl",
-    shadow && "shadow-md",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
   return (
-    <Component id={id} className={finalClassName}>
+    <Component
+      id={id}
+      className={twMerge(
+        "mx-auto",
+        sizes[size],
+        paddingMap[padding],
+        backgroundMap[background],
+        rounded && "rounded-lg",
+        shadow && "shadow-sm",
+        className
+      )}
+    >
       {children}
     </Component>
   );

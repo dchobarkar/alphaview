@@ -3,7 +3,6 @@ import axios from "axios";
 const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 const BASE_URL = "https://www.alphavantage.co/query";
 
-// Types for API responses
 export interface TimeSeriesData {
   [key: string]: {
     [key: string]: string | number;
@@ -23,7 +22,6 @@ export interface GlobalQuote {
   changePercent: string;
 }
 
-// API Service class
 export class AlphaVantageService {
   private static instance: AlphaVantageService;
   private constructor() {}
@@ -45,7 +43,6 @@ export class AlphaVantageService {
       });
       return response.data;
     } catch (error) {
-      console.error("Error fetching data:", error);
       throw error;
     }
   }

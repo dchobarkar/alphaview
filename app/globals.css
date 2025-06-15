@@ -1,29 +1,64 @@
 @import "tailwindcss";
 
-@theme {
-  /* Colors */
-  --color-primary: #1e3a8a; /* Indigo 800 */
-  --color-secondary: #10b981; /* Emerald 500 */
-  --color-accent: #f59e0b; /* Amber 500 */
-  --color-background: #f9fafb; /* Gray 50 */
-  --color-foreground: #111827; /* Gray 900 */
-
-  /* Fonts */
-  --font-body: "Inter", sans-serif;
-  --font-heading: "Montserrat", sans-serif;
+:root {
+  --color-primary: #2563eb; /* Blue 600 */
+  --color-secondary: #0f766e; /* Teal 700 */
+  --color-background: #ffffff;
+  --color-text: #1f2937; /* Gray 800 */
+  --color-muted: #6b7280; /* Gray 500 */
 }
 
-/* Base Styles */
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    font-family: var(--font-body);
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-white text-gray-800;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-gray-800 font-semibold;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+  }
+  h2 {
+    font-size: 1.875rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+  h5 {
+    font-size: 1.125rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  a {
+    @apply text-blue-600;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
   }
 }

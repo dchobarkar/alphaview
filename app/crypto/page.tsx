@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { DataTable } from "../components/DataTable";
-import { AlphaVantageService } from "../services/alphaVantage";
 import PageLayout from "../ui/components/shared/PageLayout";
+import { AlphaVantageService } from "../services/alphaVantage";
 
 interface CryptoData {
   [key: string]: {
@@ -36,7 +37,6 @@ export default function CryptoPage() {
         toCurrency
       );
 
-      // Transform the response data into a format suitable for the table
       const cryptoKey = Object.keys(response).find((key) =>
         key.includes("Exchange Rate")
       );

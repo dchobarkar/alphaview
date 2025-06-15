@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { DataTable } from "../components/DataTable";
-import { AlphaVantageService } from "../services/alphaVantage";
 import PageLayout from "../ui/components/shared/PageLayout";
+import { AlphaVantageService } from "../services/alphaVantage";
 
 interface TechnicalData {
   [key: string]: {
@@ -31,7 +32,6 @@ export default function TechnicalPage() {
       const service = AlphaVantageService.getInstance();
       const response: ApiResponse = await service.getSMA(symbol);
 
-      // Transform the response data into a format suitable for the table
       const technicalKey = Object.keys(response).find((key) =>
         key.includes("SMA")
       );

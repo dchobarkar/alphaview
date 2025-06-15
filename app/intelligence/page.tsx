@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { DataTable } from "../components/DataTable";
-import { AlphaVantageService } from "../services/alphaVantage";
 import PageLayout from "../ui/components/shared/PageLayout";
+import { AlphaVantageService } from "../services/alphaVantage";
 
 interface NewsData {
   [key: string]: {
@@ -34,7 +35,6 @@ export default function IntelligencePage() {
       const service = AlphaVantageService.getInstance();
       const response: ApiResponse = await service.getNewsSentiment(keywords);
 
-      // Transform the response data into a format suitable for the table
       const newsKey = Object.keys(response).find((key) => key.includes("News"));
       if (newsKey) {
         const newsData = response[newsKey] as NewsData;

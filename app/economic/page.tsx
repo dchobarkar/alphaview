@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { DataTable } from "../components/DataTable";
-import { AlphaVantageService } from "../services/alphaVantage";
 import PageLayout from "../ui/components/shared/PageLayout";
+import { AlphaVantageService } from "../services/alphaVantage";
 
 interface EconomicData {
   [key: string]: {
@@ -33,7 +34,6 @@ export default function EconomicPage() {
         indicator
       );
 
-      // Transform the response data into a format suitable for the table
       const economicKey = Object.keys(response).find((key) =>
         key.includes("Indicator")
       );

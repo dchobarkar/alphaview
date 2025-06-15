@@ -1,38 +1,30 @@
+import React from "react";
+import { twMerge } from "tailwind-merge";
+
 interface SectionHeaderProps {
   title: string;
-  subtitle?: string;
-  align?: "left" | "center" | "right";
+  description?: string;
   className?: string;
+  actions?: React.ReactNode;
 }
 
-const SectionHeader = ({
+export const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
-  subtitle,
-  align = "left",
-  className = "",
-}: SectionHeaderProps) => {
-  const alignmentClass = {
-    left: "text-left",
-    center: "text-center",
-    right: "text-right",
-  }[align];
-
-  const containerClass = ["mb-8 md:mb-10", alignmentClass, className]
-    .filter(Boolean)
-    .join(" ");
-
+  description,
+  className,
+  actions,
+}) => {
   return (
-    <div className={containerClass}>
-      <h2 className="text-3xl font-heading text-foreground leading-tight">
-        {title}
-      </h2>
-      {subtitle && (
-        <p className="text-sm font-body text-foreground text-opacity-70 mb-1">
-          {subtitle}
-        </p>
-      )}
+    <div className={twMerge("mb-8", className)}>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
+          {description && (
+            <p className="mt-1 text-sm text-gray-500">{description}</p>
+          )}
+        </div>
+        {actions && <div className="flex items-center gap-4">{actions}</div>}
+      </div>
     </div>
   );
 };
-
-export default SectionHeader;

@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 
 interface Props {
@@ -14,7 +15,6 @@ const InputForm: React.FC<Props> = ({ requiredParams, onSubmit }) => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log("clicked");
     e.preventDefault();
     onSubmit(formState);
   };

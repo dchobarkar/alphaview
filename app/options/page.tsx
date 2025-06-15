@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { DataTable } from "../components/DataTable";
-import { AlphaVantageService } from "../services/alphaVantage";
 import PageLayout from "../ui/components/shared/PageLayout";
+import { AlphaVantageService } from "../services/alphaVantage";
 
 interface OptionsData {
   [key: string]: {
@@ -35,7 +36,6 @@ export default function OptionsPage() {
       const service = AlphaVantageService.getInstance();
       const response: ApiResponse = await service.getOptionsData(symbol);
 
-      // Transform the response data into a format suitable for the table
       const optionsKey = Object.keys(response).find((key) =>
         key.includes("Options")
       );
@@ -43,8 +43,8 @@ export default function OptionsPage() {
         const optionsData = response[optionsKey] as OptionsData;
         const transformedData = Object.entries(optionsData).map(
           ([strike, values]) => ({
-            strike,
             ...values,
+            strike,
           })
         );
         setData(transformedData);
