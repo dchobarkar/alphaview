@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 
-import Header from "./ui/components/Header";
-import Footer from "./ui/components/Footer";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,15 +19,11 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Alpha Vantage Dashboard",
-  description: "Finance dashboard powered by Alpha Vantage APIs",
+  title: "AlphaView - Alpha Vantage Data Viewer",
+  description: "A modern web application for viewing Alpha Vantage API data",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body
@@ -43,4 +39,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
