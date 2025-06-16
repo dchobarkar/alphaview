@@ -11,17 +11,17 @@ const Page = () => {
       href: "/core-stock",
     },
     {
-      title: "Options",
+      title: "Options Data",
       description: "View options chain data and volatility metrics",
       href: "/options",
     },
     {
-      title: "Intelligence",
+      title: "Alpha Intelligence",
       description: "Get market sentiment and news analysis",
       href: "/intelligence",
     },
     {
-      title: "Fundamental",
+      title: "Fundamental Data",
       description: "Access company financials and earnings data",
       href: "/fundamental",
     },
@@ -31,7 +31,7 @@ const Page = () => {
       href: "/forex",
     },
     {
-      title: "Crypto",
+      title: "Cryptocurrencies",
       description: "Access cryptocurrency prices and market data",
       href: "/crypto",
     },
@@ -41,14 +41,14 @@ const Page = () => {
       href: "/commodities",
     },
     {
-      title: "Technical",
-      description: "Access technical indicators and analysis",
-      href: "/technical",
-    },
-    {
-      title: "Economic",
+      title: "Economic Indicators",
       description: "View economic indicators and market data",
       href: "/economic",
+    },
+    {
+      title: "Technical Indicators",
+      description: "Access technical indicators and analysis",
+      href: "/technical",
     },
   ];
 
