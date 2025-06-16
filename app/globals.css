@@ -52,13 +52,4 @@
   p {
     margin-bottom: 1rem;
   }
-
-  a {
-    @apply text-blue-600;
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
 }
