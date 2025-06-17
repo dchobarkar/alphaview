@@ -3,25 +3,6 @@ import axios from "axios";
 const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 const BASE_URL = "https://www.alphavantage.co/query";
 
-export interface TimeSeriesData {
-  [key: string]: {
-    [key: string]: string | number;
-  };
-}
-
-export interface GlobalQuote {
-  symbol: string;
-  open: string;
-  high: string;
-  low: string;
-  price: string;
-  volume: string;
-  latestTradingDay: string;
-  previousClose: string;
-  change: string;
-  changePercent: string;
-}
-
 export class AlphaVantageService {
   private static instance: AlphaVantageService;
   private constructor() {}
