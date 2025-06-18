@@ -24,6 +24,7 @@ const Card = ({ children, className, title, subtitle }: CardProps) => {
           {subtitle && <p className="mt-1 text-sm text-gray-500">{subtitle}</p>}
         </div>
       )}
+
       <div className="p-6">{children}</div>
     </div>
   );
