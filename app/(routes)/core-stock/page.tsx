@@ -4,10 +4,10 @@ import { useState } from "react";
 
 import PageLayout from "@/app/components/shared/PageLayout";
 import SectionHeader from "@/app/components/shared/SectionHeader";
-import Form from "@/app/components/ui/form";
+import Form from "@/app/components/ui/Form";
 import Table from "@/app/components/ui/Table";
-import { fetchAlphaVantageData } from "@/app/lib/alpha-vantage/api";
-import { TimeSeriesData } from "@/app/lib/alphaVantage";
+import { AlphaVantageService } from "@/app/lib/alpha-vantage/service";
+import { TimeSeriesData } from "@/app/lib/alpha-vantage/types";
 
 const Page = () => {
   const [data, setData] = useState<Record<string, string | number>[]>([]);
@@ -19,27 +19,29 @@ const Page = () => {
     setError(undefined);
 
     try {
-      let functionName = "TIME_SERIES_DAILY";
+      let response;
+
       switch (formData.dataType) {
         case "intraday":
-          functionName = "TIME_SERIES_INTRADAY";
+          response = await AlphaVantageService.getIntraday(
+            formData.symbol,
+            "5min"
+          );
           break;
         case "weekly":
-          functionName = "TIME_SERIES_WEEKLY";
+          response = await AlphaVantageService.getWeekly(formData.symbol);
           break;
         case "monthly":
-          functionName = "TIME_SERIES_MONTHLY";
+          response = await AlphaVantageService.getMonthly(formData.symbol);
           break;
+        default:
+          response = await AlphaVantageService.getDaily(formData.symbol);
       }
-
-      const response = await fetchAlphaVantageData(functionName, {
-        symbol: formData.symbol,
-        ...(formData.dataType === "intraday" && { interval: "5min" }),
-      });
 
       const timeSeriesKey = Object.keys(response).find((key) =>
         key.includes("Time Series")
       );
+
       if (timeSeriesKey) {
         const timeSeriesData = response[timeSeriesKey] as TimeSeriesData;
         const transformedData = Object.entries(timeSeriesData).map(

@@ -45,10 +45,6 @@ const Form = ({
     React.useState<Record<string, string>>(initialValues);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  React.useEffect(() => {
-    setFormData(initialValues);
-  }, [initialValues]);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
