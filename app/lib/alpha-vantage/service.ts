@@ -45,6 +45,14 @@ export const AlphaVantageService = {
     });
   },
 
+  // Options Data APIs
+  async getOptions(symbol: string) {
+    return fetchData({
+      function: "HISTORICAL_OPTIONS",
+      symbol,
+    });
+  },
+
   async getGlobalQuote(symbol: string) {
     return fetchData({
       function: "GLOBAL_QUOTE",
