@@ -48,3 +48,22 @@ export interface AlphaVantageResponse {
   "Global Quote"?: GlobalQuote;
   bestMatches?: SearchResult[];
 }
+
+export type NewsFeedItem = {
+  title: string;
+  url: string;
+  time_published: string;
+  authors: string[] | string;
+  summary: string;
+  banner_image: string;
+  source: string;
+  category_within_source: string;
+  source_domain: string;
+  topics: { topic: string }[] | string;
+  overall_sentiment_score: number | string;
+  overall_sentiment_label: string;
+  ticker_sentiment:
+    | { ticker: string; ticker_sentiment_label: string }[]
+    | string;
+  [key: string]: unknown;
+};

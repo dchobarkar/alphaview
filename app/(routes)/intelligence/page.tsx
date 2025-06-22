@@ -4,47 +4,45 @@ import { useState } from "react";
 
 import PageLayout from "@/app/components/shared/PageLayout";
 import SectionHeader from "@/app/components/shared/SectionHeader";
-import Button from "@/app/components/ui/Button";
-import Input from "@/app/components/ui/Input";
 import Table from "@/app/components/ui/Table";
-import { fetchAlphaVantageData } from "@/app/lib/alpha-vantage/api";
-
-interface NewsData {
-  [key: string]: {
-    title: string;
-    url: string;
-    time_published: string;
-    summary: string;
-    sentiment: string;
-  };
-}
+import Form from "@/app/components/ui/Form";
+import { AlphaVantageService } from "@/app/lib/alpha-vantage/service";
+import { NewsFeedItem } from "@/app/lib/alpha-vantage/types";
 
 const Page = () => {
-  const [keywords, setKeywords] = useState("");
   const [data, setData] = useState<Record<string, string | number>[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (formData: Record<string, string>) => {
     setIsLoading(true);
     setError(undefined);
-
     try {
-      const response = await fetchAlphaVantageData("NEWS_SENTIMENT", {
-        keywords,
-      });
-
-      const newsKey = Object.keys(response).find((key) => key.includes("News"));
-      if (newsKey) {
-        const newsData = response[newsKey] as NewsData;
-        const transformedData = Object.entries(newsData).map(
-          ([title, values]) => ({
-            newsTitle: title,
-            ...values,
+      const response = await AlphaVantageService.getNewsSentiment(
+        formData.keywords
+      );
+      const newsArray = response.feed;
+      if (Array.isArray(newsArray) && newsArray.length > 0) {
+        const processedData: Record<string, string | number>[] = newsArray.map(
+          (item: NewsFeedItem) => ({
+            ...item,
+            authors: Array.isArray(item.authors)
+              ? item.authors.join(", ")
+              : item.authors ?? "",
+            topics: Array.isArray(item.topics)
+              ? item.topics.map((t: { topic: string }) => t.topic).join(", ")
+              : item.topics ?? "",
+            ticker_sentiment: Array.isArray(item.ticker_sentiment)
+              ? item.ticker_sentiment
+                  .map(
+                    (t: { ticker: string; ticker_sentiment_label: string }) =>
+                      `${t.ticker}: ${t.ticker_sentiment_label}`
+                  )
+                  .join(", ")
+              : item.ticker_sentiment ?? "",
           })
         );
-        setData(transformedData);
+        setData(processedData);
       } else {
         setError("No news data found in the response");
       }
@@ -56,11 +54,29 @@ const Page = () => {
   };
 
   const columns = [
-    { header: "Title", accessor: "newsTitle" },
+    { header: "Title", accessor: "title" },
     { header: "URL", accessor: "url" },
     { header: "Time Published", accessor: "time_published" },
+    { header: "Authors", accessor: "authors" },
     { header: "Summary", accessor: "summary" },
-    { header: "Sentiment", accessor: "sentiment" },
+    { header: "Banner Image", accessor: "banner_image" },
+    { header: "Source", accessor: "source" },
+    { header: "Category", accessor: "category_within_source" },
+    { header: "Source Domain", accessor: "source_domain" },
+    { header: "Topics", accessor: "topics" },
+    { header: "Overall Sentiment Score", accessor: "overall_sentiment_score" },
+    { header: "Overall Sentiment Label", accessor: "overall_sentiment_label" },
+    { header: "Ticker Sentiment", accessor: "ticker_sentiment" },
+  ];
+
+  const formFields = [
+    {
+      name: "keywords",
+      label: "Keywords",
+      type: "text" as const,
+      placeholder: "e.g., AAPL",
+      required: true,
+    },
   ];
 
   return (
@@ -69,26 +85,14 @@ const Page = () => {
         title="Alpha Intelligence"
         description="Get market sentiment and news analysis"
       />
-
-      <form onSubmit={handleSubmit} className="mb-8">
-        <div className="flex gap-4 items-end">
-          <Input
-            label="Keywords"
-            id="keywords"
-            value={keywords}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setKeywords(e.target.value)
-            }
-            placeholder="e.g., AAPL"
-            required
-          />
-
-          <Button type="submit" isLoading={isLoading}>
-            Fetch Data
-          </Button>
-        </div>
-      </form>
-
+      <Form
+        fields={formFields}
+        onSubmit={handleSubmit}
+        submitLabel="Fetch Data"
+        isLoading={isLoading}
+        error={error}
+        className="mb-8"
+      />
       <Table
         columns={columns}
         data={data}

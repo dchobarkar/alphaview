@@ -11,6 +11,7 @@ const fetchData = async (params: Record<string, string>) => {
         apikey: API_KEY,
       },
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error;
@@ -53,17 +54,18 @@ export const AlphaVantageService = {
     });
   },
 
-  async getGlobalQuote(symbol: string) {
-    return fetchData({
-      function: "GLOBAL_QUOTE",
-      symbol,
-    });
-  },
   // Alpha Intelligence
   async getNewsSentiment(keywords: string) {
     return fetchData({
       function: "NEWS_SENTIMENT",
       keywords,
+    });
+  },
+
+  async getGlobalQuote(symbol: string) {
+    return fetchData({
+      function: "GLOBAL_QUOTE",
+      symbol,
     });
   },
   // Fundamental Data
