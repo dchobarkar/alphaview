@@ -33,12 +33,79 @@ export interface SearchResult {
   "9. matchScore": string;
 }
 
+export interface TopGainersLosers {
+  top_gainers: Array<{
+    ticker: string;
+    price: string;
+    change_amount: string;
+    change_percentage: string;
+    volume: string;
+  }>;
+  top_losers: Array<{
+    ticker: string;
+    price: string;
+    change_amount: string;
+    change_percentage: string;
+    volume: string;
+  }>;
+  most_actively_traded: Array<{
+    ticker: string;
+    price: string;
+    change_amount: string;
+    change_percentage: string;
+    volume: string;
+  }>;
+}
+
+export interface TreasuryYield {
+  [date: string]: {
+    "1 month": string;
+    "2 month": string;
+    "3 month": string;
+    "6 month": string;
+    "1 year": string;
+    "2 year": string;
+    "3 year": string;
+    "5 year": string;
+    "7 year": string;
+    "10 year": string;
+    "20 year": string;
+    "30 year": string;
+  };
+}
+
+export interface FederalFundsRate {
+  [date: string]: {
+    "federal funds rate": string;
+  };
+}
+
+export interface CPIData {
+  [date: string]: {
+    CPI: string;
+  };
+}
+
+export interface InflationExpectation {
+  [date: string]: {
+    "inflation expectation": string;
+  };
+}
+
 export interface AlphaVantageResponse {
   [key: string]:
     | string
     | TimeSeriesData
     | GlobalQuote
     | SearchResult[]
+    | TopGainersLosers
+    | TreasuryYield
+    | FederalFundsRate
+    | CPIData
+    | InflationExpectation
+    | TopGainersLosers["top_gainers"]
+    | TopGainersLosers["top_losers"]
+    | TopGainersLosers["most_actively_traded"]
     | { [key: string]: string }
     | undefined;
   "Meta Data"?: {
@@ -47,6 +114,13 @@ export interface AlphaVantageResponse {
   "Time Series (Daily)"?: TimeSeriesData;
   "Global Quote"?: GlobalQuote;
   bestMatches?: SearchResult[];
+  "Top Gainers"?: TopGainersLosers["top_gainers"];
+  "Top Losers"?: TopGainersLosers["top_losers"];
+  "Most Actively Traded"?: TopGainersLosers["most_actively_traded"];
+  "Treasury Yield"?: TreasuryYield;
+  "Federal Funds Rate"?: FederalFundsRate;
+  CPI?: CPIData;
+  "Inflation Expectation"?: InflationExpectation;
 }
 
 export type NewsFeedItem = {
