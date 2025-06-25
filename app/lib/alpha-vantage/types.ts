@@ -141,3 +141,15 @@ export type NewsFeedItem = {
     | string;
   [key: string]: unknown;
 };
+
+export interface InsiderTransaction {
+  transaction_date: string;
+  ticker: string;
+  executive: string;
+  executive_title: string;
+  security_type: string;
+  acquisition_or_disposal: string;
+  shares: string;
+  share_price: string;
+  [key: string]: unknown;
+}

@@ -7,15 +7,12 @@ import SectionHeader from "@/app/components/shared/SectionHeader";
 import Table from "@/app/components/ui/Table";
 import Form from "@/app/components/ui/Form";
 import { AlphaVantageService } from "@/app/lib/alpha-vantage/service";
-import { NewsFeedItem } from "@/app/lib/alpha-vantage/types";
+import {
+  NewsFeedItem,
+  InsiderTransaction,
+} from "@/app/lib/alpha-vantage/types";
 
-type TabType =
-  | "news"
-  | "gainers-losers"
-  | "treasury"
-  | "federal-funds"
-  | "cpi"
-  | "inflation";
+type TabType = "news" | "gainers-losers" | "insider";
 
 interface StockItem {
   ticker: string;
@@ -43,24 +40,9 @@ const Page = () => {
       description: "Most active US stocks",
     },
     {
-      id: "treasury" as TabType,
-      label: "Treasury Yields",
-      description: "US Treasury yield rates",
-    },
-    {
-      id: "federal-funds" as TabType,
-      label: "Federal Funds Rate",
-      description: "Federal funds rate data",
-    },
-    {
-      id: "cpi" as TabType,
-      label: "CPI",
-      description: "Consumer Price Index data",
-    },
-    {
-      id: "inflation" as TabType,
-      label: "Inflation Expectations",
-      description: "Inflation expectation data",
+      id: "insider" as TabType,
+      label: "Insider Transactions",
+      description: "Recent insider trading activity for a symbol",
     },
   ];
 
@@ -157,132 +139,31 @@ const Page = () => {
     }
   };
 
-  const handleTreasuryYield = async () => {
+  const handleInsiderTransactions = async (
+    formData: Record<string, string>
+  ) => {
     setIsLoading(true);
     setError(undefined);
     try {
-      const response = await AlphaVantageService.getTreasuryYield();
-      const treasuryData = response["Treasury Yield"];
-      if (treasuryData) {
-        const processedData: Record<string, string | number>[] = Object.entries(
-          treasuryData
-        ).map(([date, rates]) => {
-          const rateData = rates as {
-            "1 month": string;
-            "2 month": string;
-            "3 month": string;
-            "6 month": string;
-            "1 year": string;
-            "2 year": string;
-            "3 year": string;
-            "5 year": string;
-            "7 year": string;
-            "10 year": string;
-            "20 year": string;
-            "30 year": string;
-          };
-          return {
-            date,
-            "1_month": rateData["1 month"],
-            "2_month": rateData["2 month"],
-            "3_month": rateData["3 month"],
-            "6_month": rateData["6 month"],
-            "1_year": rateData["1 year"],
-            "2_year": rateData["2 year"],
-            "3_year": rateData["3 year"],
-            "5_year": rateData["5 year"],
-            "7_year": rateData["7 year"],
-            "10_year": rateData["10 year"],
-            "20_year": rateData["20 year"],
-            "30_year": rateData["30 year"],
-          };
-        });
+      const response = await AlphaVantageService.getInsiderTransactions(
+        formData.symbol
+      );
+      const insiderArray = response.data;
+      if (Array.isArray(insiderArray) && insiderArray.length > 0) {
+        const processedData: Record<string, string | number>[] =
+          insiderArray.map((item: InsiderTransaction) => ({
+            transaction_date: item.transaction_date,
+            ticker: item.ticker,
+            executive: item.executive,
+            executive_title: item.executive_title,
+            security_type: item.security_type,
+            acquisition_or_disposal: item.acquisition_or_disposal,
+            shares: item.shares,
+            share_price: item.share_price,
+          }));
         setData(processedData);
       } else {
-        setError("No treasury yield data found");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleFederalFundsRate = async () => {
-    setIsLoading(true);
-    setError(undefined);
-    try {
-      const response = await AlphaVantageService.getFederalFundsRate();
-      const fedData = response["Federal Funds Rate"];
-      if (fedData) {
-        const processedData: Record<string, string | number>[] = Object.entries(
-          fedData
-        ).map(([date, rate]) => {
-          const rateData = rate as { "federal funds rate": string };
-          return {
-            date,
-            federal_funds_rate: rateData["federal funds rate"],
-          };
-        });
-        setData(processedData);
-      } else {
-        setError("No federal funds rate data found");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCPI = async () => {
-    setIsLoading(true);
-    setError(undefined);
-    try {
-      const response = await AlphaVantageService.getCPI();
-      const cpiData = response["CPI"];
-      if (cpiData) {
-        const processedData: Record<string, string | number>[] = Object.entries(
-          cpiData
-        ).map(([date, cpi]) => {
-          const cpiData = cpi as { CPI: string };
-          return {
-            date,
-            cpi: cpiData["CPI"],
-          };
-        });
-        setData(processedData);
-      } else {
-        setError("No CPI data found");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleInflationExpectation = async () => {
-    setIsLoading(true);
-    setError(undefined);
-    try {
-      const response = await AlphaVantageService.getInflationExpectation();
-      const inflationData = response["Inflation Expectation"];
-      if (inflationData) {
-        const processedData: Record<string, string | number>[] = Object.entries(
-          inflationData
-        ).map(([date, expectation]) => {
-          const expectationData = expectation as {
-            "inflation expectation": string;
-          };
-          return {
-            date,
-            inflation_expectation: expectationData["inflation expectation"],
-          };
-        });
-        setData(processedData);
-      } else {
-        setError("No inflation expectation data found");
+        setError("No insider transaction data found");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -312,35 +193,17 @@ const Page = () => {
           { header: "Change %", accessor: "change_percentage" },
           { header: "Volume", accessor: "volume" },
         ];
-      case "treasury":
+
+      case "insider":
         return [
-          { header: "Date", accessor: "date" },
-          { header: "1 Month", accessor: "1_month" },
-          { header: "3 Month", accessor: "3_month" },
-          { header: "6 Month", accessor: "6_month" },
-          { header: "1 Year", accessor: "1_year" },
-          { header: "2 Year", accessor: "2_year" },
-          { header: "5 Year", accessor: "5_year" },
-          { header: "10 Year", accessor: "10_year" },
-          { header: "30 Year", accessor: "30_year" },
-        ];
-      case "federal-funds":
-        return [
-          { header: "Date", accessor: "date" },
-          { header: "Federal Funds Rate", accessor: "federal_funds_rate" },
-        ];
-      case "cpi":
-        return [
-          { header: "Date", accessor: "date" },
-          { header: "CPI", accessor: "cpi" },
-        ];
-      case "inflation":
-        return [
-          { header: "Date", accessor: "date" },
-          {
-            header: "Inflation Expectation",
-            accessor: "inflation_expectation",
-          },
+          { header: "Date", accessor: "transaction_date" },
+          { header: "Ticker", accessor: "ticker" },
+          { header: "Executive", accessor: "executive" },
+          { header: "Title", accessor: "executive_title" },
+          { header: "Security Type", accessor: "security_type" },
+          { header: "Action", accessor: "acquisition_or_disposal" },
+          { header: "Shares", accessor: "shares" },
+          { header: "Share Price", accessor: "share_price" },
         ];
       default:
         return [];
@@ -359,6 +222,16 @@ const Page = () => {
             required: true,
           },
         ];
+      case "insider":
+        return [
+          {
+            name: "symbol",
+            label: "Symbol",
+            type: "text" as const,
+            placeholder: "e.g., AAPL",
+            required: true,
+          },
+        ];
       default:
         return [];
     }
@@ -372,17 +245,8 @@ const Page = () => {
       case "gainers-losers":
         await handleTopGainersLosers();
         break;
-      case "treasury":
-        await handleTreasuryYield();
-        break;
-      case "federal-funds":
-        await handleFederalFundsRate();
-        break;
-      case "cpi":
-        await handleCPI();
-        break;
-      case "inflation":
-        await handleInflationExpectation();
+      case "insider":
+        await handleInsiderTransactions(formData);
         break;
     }
   };
@@ -421,18 +285,22 @@ const Page = () => {
         </p>
       </div>
       {/* Form (only for news sentiment) */}
-      {activeTab === "news" && (
+      {(activeTab === "news" || activeTab === "insider") && (
         <Form
           fields={getFormFields()}
           onSubmit={handleSubmit}
-          submitLabel="Fetch News Sentiment"
+          submitLabel={
+            activeTab === "news"
+              ? "Fetch News Sentiment"
+              : "Fetch Insider Transactions"
+          }
           isLoading={isLoading}
           error={error}
           className="mb-8"
         />
       )}
       {/* Action buttons for other tabs */}
-      {activeTab !== "news" && (
+      {activeTab !== "news" && activeTab !== "insider" && (
         <div className="mb-8">
           <button
             onClick={() => handleSubmit({})}

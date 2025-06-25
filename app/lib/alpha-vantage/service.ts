@@ -66,25 +66,10 @@ export const AlphaVantageService = {
       function: "TOP_GAINERS_LOSERS",
     });
   },
-
-  async getTreasuryYield() {
+  async getInsiderTransactions(symbol: string) {
     return fetchData({
-      function: "TREASURY_YIELD",
-    });
-  },
-  async getFederalFundsRate() {
-    return fetchData({
-      function: "FEDERAL_FUNDS_RATE",
-    });
-  },
-  async getCPI() {
-    return fetchData({
-      function: "CPI",
-    });
-  },
-  async getInflationExpectation() {
-    return fetchData({
-      function: "INFLATION_EXPECTATION",
+      function: "INSIDER_TRANSACTIONS",
+      symbol,
     });
   },
 
