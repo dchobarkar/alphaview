@@ -153,3 +153,146 @@ export interface InsiderTransaction {
   share_price: string;
   [key: string]: unknown;
 }
+
+export interface CompanyOverview {
+  Symbol: string;
+  AssetType: string;
+  Name: string;
+  Description: string;
+  CIK: string;
+  Exchange: string;
+  Currency: string;
+  Country: string;
+  Sector: string;
+  Industry: string;
+  Address: string;
+  FiscalYearEnd: string;
+  LatestQuarter: string;
+  MarketCapitalization: string;
+  EBITDA: string;
+  PERatio: string;
+  PEGRatio: string;
+  BookValue: string;
+  DividendPerShare: string;
+  DividendYield: string;
+  EPS: string;
+  RevenuePerShareTTM: string;
+  ProfitMargin: string;
+  OperatingMarginTTM: string;
+  ReturnOnAssetsTTM: string;
+  ReturnOnEquityTTM: string;
+  RevenueTTM: string;
+  GrossProfitTTM: string;
+  DilutedEPSTTM: string;
+  QuarterlyEarningsGrowthYOY: string;
+  QuarterlyRevenueGrowthYOY: string;
+  AnalystTargetPrice: string;
+  TrailingPE: string;
+  ForwardPE: string;
+  PriceToSalesRatioTTM: string;
+  PriceToBookRatio: string;
+  EVToRevenue: string;
+  EVToEBITDA: string;
+  Beta: string;
+  "52WeekHigh": string;
+  "52WeekLow": string;
+  "50DayMovingAverage": string;
+  "200DayMovingAverage": string;
+  SharesOutstanding: string;
+  DividendDate: string;
+  ExDividendDate: string;
+  [key: string]: string;
+}
+
+export interface ETFOverview {
+  Symbol: string;
+  Name: string;
+  Description: string;
+  Exchange: string;
+  Currency: string;
+  Country: string;
+  Sector: string;
+  Industry: string;
+  Address: string;
+  FiscalYearEnd: string;
+  LatestQuarter: string;
+  MarketCapitalization: string;
+  NetAssetValue: string;
+  TotalAssets: string;
+  SharesOutstanding: string;
+  DividendDate: string;
+  ExDividendDate: string;
+  [key: string]: string;
+}
+
+export interface DividendHistoryItem {
+  symbol: string;
+  dividend: string;
+  recordDate: string;
+  paymentDate: string;
+  declarationDate: string;
+  [key: string]: string;
+}
+
+export interface SplitHistoryItem {
+  symbol: string;
+  splitRatio: string;
+  splitDate: string;
+  [key: string]: string;
+}
+
+export interface IncomeStatement {
+  symbol: string;
+  annualReports: Array<{ [key: string]: string }>;
+  quarterlyReports: Array<{ [key: string]: string }>;
+}
+
+export interface BalanceSheet {
+  symbol: string;
+  annualReports: Array<{ [key: string]: string }>;
+  quarterlyReports: Array<{ [key: string]: string }>;
+}
+
+export interface CashFlow {
+  symbol: string;
+  annualReports: Array<{ [key: string]: string }>;
+  quarterlyReports: Array<{ [key: string]: string }>;
+}
+
+export interface Earnings {
+  symbol: string;
+  annualEarnings: Array<{ [key: string]: string }>;
+  quarterlyEarnings: Array<{ [key: string]: string }>;
+}
+
+export interface ListingStatusItem {
+  symbol: string;
+  name: string;
+  exchange: string;
+  assetType: string;
+  ipoDate: string;
+  delistingDate: string;
+  status: string;
+  [key: string]: string;
+}
+
+export interface EarningsCalendarItem {
+  symbol: string;
+  name: string;
+  reportDate: string;
+  fiscalDateEnding: string;
+  estimate: string;
+  currency: string;
+  [key: string]: string;
+}
+
+export interface IPOCalendarItem {
+  symbol: string;
+  name: string;
+  ipoDate: string;
+  priceRangeLow: string;
+  priceRangeHigh: string;
+  currency: string;
+  exchange: string;
+  [key: string]: string;
+}

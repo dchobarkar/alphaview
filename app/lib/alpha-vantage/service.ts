@@ -73,37 +73,42 @@ export const AlphaVantageService = {
     });
   },
 
-  async getGlobalQuote(symbol: string) {
-    return fetchData({
-      function: "GLOBAL_QUOTE",
-      symbol,
-    });
-  },
   // Fundamental Data
   async getCompanyOverview(symbol: string) {
-    return fetchData({
-      function: "OVERVIEW",
-      symbol,
-    });
+    return fetchData({ function: "OVERVIEW", symbol });
+  },
+  async getETFOverview(symbol: string) {
+    return fetchData({ function: "ETF_PROFILE", symbol });
+  },
+  async getDividendHistory(symbol: string) {
+    return fetchData({ function: "DIVIDENDS", symbol });
+  },
+  async getSplitHistory(symbol: string) {
+    return fetchData({ function: "SPLITS", symbol });
   },
   async getIncomeStatement(symbol: string) {
-    return fetchData({
-      function: "INCOME_STATEMENT",
-      symbol,
-    });
+    return fetchData({ function: "INCOME_STATEMENT", symbol });
   },
   async getBalanceSheet(symbol: string) {
-    return fetchData({
-      function: "BALANCE_SHEET",
-      symbol,
-    });
+    return fetchData({ function: "BALANCE_SHEET", symbol });
   },
   async getCashFlow(symbol: string) {
-    return fetchData({
-      function: "CASH_FLOW",
-      symbol,
-    });
+    return fetchData({ function: "CASH_FLOW", symbol });
   },
+  async getEarnings(symbol: string) {
+    return fetchData({ function: "EARNINGS", symbol });
+  },
+
+  async getListingStatus(status: "active" | "delisted" = "active") {
+    return fetchData({ function: "LISTING_STATUS", state: status });
+  },
+  async getEarningsCalendar(horizon: string = "3month") {
+    return fetchData({ function: "EARNINGS_CALENDAR", horizon });
+  },
+  async getIPOCalendar(horizon: string = "3month") {
+    return fetchData({ function: "IPO_CALENDAR", horizon });
+  },
+
   // Forex (FX)
   async getForexExchangeRate(fromCurrency: string, toCurrency: string) {
     return fetchData({
@@ -170,6 +175,13 @@ export const AlphaVantageService = {
   async getEconomicIndicator(indicator: string) {
     return fetchData({
       function: indicator,
+    });
+  },
+
+  async getGlobalQuote(symbol: string) {
+    return fetchData({
+      function: "GLOBAL_QUOTE",
+      symbol,
     });
   },
 };
