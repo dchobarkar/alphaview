@@ -18,10 +18,6 @@ const TABS = [
   { id: "balance", label: "Balance Sheet" },
   { id: "cashflow", label: "Cash Flow" },
   { id: "earnings", label: "Earnings" },
-
-  { id: "listing", label: "Listing Status" },
-  { id: "earningscal", label: "Earnings Calendar" },
-  { id: "ipocal", label: "IPO Calendar" },
 ];
 
 type TabId = (typeof TABS)[number]["id"];
@@ -32,8 +28,6 @@ const Page = () => {
   const [data, setData] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
-  const [status, setStatus] = useState<"active" | "delisted">("active");
-  const [horizon, setHorizon] = useState("3month");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,19 +68,6 @@ const Page = () => {
         case "earnings":
           response = await AlphaVantageService.getEarnings(symbol);
           setData(response);
-          break;
-
-        case "listing":
-          response = await AlphaVantageService.getListingStatus(status);
-          setData(response.data || response);
-          break;
-        case "earningscal":
-          response = await AlphaVantageService.getEarningsCalendar(horizon);
-          setData(response.data || response);
-          break;
-        case "ipocal":
-          response = await AlphaVantageService.getIPOCalendar(horizon);
-          setData(response.data || response);
           break;
       }
     } catch (err) {
@@ -180,36 +161,6 @@ const Page = () => {
             : [];
         }
         return [];
-
-      case "listing":
-        return [
-          { header: "Symbol", accessor: "symbol" },
-          { header: "Name", accessor: "name" },
-          { header: "Exchange", accessor: "exchange" },
-          { header: "Asset Type", accessor: "assetType" },
-          { header: "IPO Date", accessor: "ipoDate" },
-          { header: "Delisting Date", accessor: "delistingDate" },
-          { header: "Status", accessor: "status" },
-        ];
-      case "earningscal":
-        return [
-          { header: "Symbol", accessor: "symbol" },
-          { header: "Name", accessor: "name" },
-          { header: "Report Date", accessor: "reportDate" },
-          { header: "Fiscal Date Ending", accessor: "fiscalDateEnding" },
-          { header: "Estimate", accessor: "estimate" },
-          { header: "Currency", accessor: "currency" },
-        ];
-      case "ipocal":
-        return [
-          { header: "Symbol", accessor: "symbol" },
-          { header: "Name", accessor: "name" },
-          { header: "IPO Date", accessor: "ipoDate" },
-          { header: "Price Range Low", accessor: "priceRangeLow" },
-          { header: "Price Range High", accessor: "priceRangeHigh" },
-          { header: "Currency", accessor: "currency" },
-          { header: "Exchange", accessor: "exchange" },
-        ];
       default:
         return [];
     }
@@ -280,12 +231,6 @@ const Page = () => {
           >[];
         }
         return [];
-
-      case "listing":
-      case "earningscal":
-      case "ipocal":
-        return Array.isArray(data) ? data : [];
-
       default:
         return [];
     }
@@ -315,30 +260,6 @@ const Page = () => {
           />
         );
 
-      case "listing":
-        return (
-          <select
-            className="border rounded px-2 py-1"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as "active" | "delisted")}
-          >
-            <option value="active">Active</option>
-            <option value="delisted">Delisted</option>
-          </select>
-        );
-      case "earningscal":
-      case "ipocal":
-        return (
-          <select
-            className="border rounded px-2 py-1"
-            value={horizon}
-            onChange={(e) => setHorizon(e.target.value)}
-          >
-            <option value="3month">3 Months</option>
-            <option value="6month">6 Months</option>
-            <option value="12month">12 Months</option>
-          </select>
-        );
       default:
         return null;
     }

@@ -99,16 +99,6 @@ export const AlphaVantageService = {
     return fetchData({ function: "EARNINGS", symbol });
   },
 
-  async getListingStatus(status: "active" | "delisted" = "active") {
-    return fetchData({ function: "LISTING_STATUS", state: status });
-  },
-  async getEarningsCalendar(horizon: string = "3month") {
-    return fetchData({ function: "EARNINGS_CALENDAR", horizon });
-  },
-  async getIPOCalendar(horizon: string = "3month") {
-    return fetchData({ function: "IPO_CALENDAR", horizon });
-  },
-
   // Forex (FX)
   async getForexExchangeRate(fromCurrency: string, toCurrency: string) {
     return fetchData({

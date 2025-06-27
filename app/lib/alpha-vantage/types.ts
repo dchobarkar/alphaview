@@ -264,35 +264,3 @@ export interface Earnings {
   annualEarnings: Array<{ [key: string]: string }>;
   quarterlyEarnings: Array<{ [key: string]: string }>;
 }
-
-export interface ListingStatusItem {
-  symbol: string;
-  name: string;
-  exchange: string;
-  assetType: string;
-  ipoDate: string;
-  delistingDate: string;
-  status: string;
-  [key: string]: string;
-}
-
-export interface EarningsCalendarItem {
-  symbol: string;
-  name: string;
-  reportDate: string;
-  fiscalDateEnding: string;
-  estimate: string;
-  currency: string;
-  [key: string]: string;
-}
-
-export interface IPOCalendarItem {
-  symbol: string;
-  name: string;
-  ipoDate: string;
-  priceRangeLow: string;
-  priceRangeHigh: string;
-  currency: string;
-  exchange: string;
-  [key: string]: string;
-}
