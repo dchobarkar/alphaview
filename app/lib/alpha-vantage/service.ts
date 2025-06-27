@@ -138,6 +138,28 @@ export const AlphaVantageService = {
       to_currency: toCurrency,
     });
   },
+  async getCryptoDaily(symbol: string, market: string) {
+    return fetchData({
+      function: "DIGITAL_CURRENCY_DAILY",
+      symbol,
+      market,
+    });
+  },
+  async getCryptoWeekly(symbol: string, market: string) {
+    return fetchData({
+      function: "DIGITAL_CURRENCY_WEEKLY",
+      symbol,
+      market,
+    });
+  },
+  async getCryptoMonthly(symbol: string, market: string) {
+    return fetchData({
+      function: "DIGITAL_CURRENCY_MONTHLY",
+      symbol,
+      market,
+    });
+  },
+
   // Commodities
   async getCommodityPrice(symbol: string) {
     return fetchData({
