@@ -107,6 +107,29 @@ export const AlphaVantageService = {
       to_currency: toCurrency,
     });
   },
+  async getForexDaily(fromSymbol: string, toSymbol: string) {
+    return fetchData({
+      function: "FX_DAILY",
+      from_symbol: fromSymbol,
+      to_symbol: toSymbol,
+      outputsize: "compact",
+    });
+  },
+  async getForexWeekly(fromSymbol: string, toSymbol: string) {
+    return fetchData({
+      function: "FX_WEEKLY",
+      from_symbol: fromSymbol,
+      to_symbol: toSymbol,
+    });
+  },
+  async getForexMonthly(fromSymbol: string, toSymbol: string) {
+    return fetchData({
+      function: "FX_MONTHLY",
+      from_symbol: fromSymbol,
+      to_symbol: toSymbol,
+    });
+  },
+
   // Cryptocurrencies
   async getCryptoExchangeRate(fromCurrency: string, toCurrency: string) {
     return fetchData({
