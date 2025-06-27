@@ -4,50 +4,73 @@ import { useState } from "react";
 
 import PageLayout from "@/app/components/shared/PageLayout";
 import SectionHeader from "@/app/components/shared/SectionHeader";
-import Button from "@/app/components/ui/Button";
-import Input from "@/app/components/ui/Input";
 import Table from "@/app/components/ui/Table";
-import { fetchAlphaVantageData } from "@/app/lib/alpha-vantage/api";
+import Form from "@/app/components/ui/Form";
+import { AlphaVantageService } from "@/app/lib/alpha-vantage/service";
 
-interface CommodityData {
-  [key: string]: {
-    symbol: string;
-    price: string;
-  };
-}
+const COMMODITY_APIS = [
+  { id: "WTI", label: "Crude Oil (WTI)", service: "getWTI" },
+  { id: "BRENT", label: "Crude Oil (Brent)", service: "getBrent" },
+  { id: "NATURAL_GAS", label: "Natural Gas", service: "getNaturalGas" },
+  { id: "COPPER", label: "Copper", service: "getCopper" },
+  { id: "ALUMINUM", label: "Aluminum", service: "getAluminum" },
+  { id: "WHEAT", label: "Wheat", service: "getWheat" },
+  { id: "CORN", label: "Corn", service: "getCorn" },
+  { id: "COTTON", label: "Cotton", service: "getCotton" },
+  { id: "SUGAR", label: "Sugar", service: "getSugar" },
+  { id: "COFFEE", label: "Coffee", service: "getCoffee" },
+  {
+    id: "ALL_COMMODITIES",
+    label: "Global Commodities Index",
+    service: "getAllCommodities",
+  },
+];
+
+const INTERVAL_OPTIONS = [
+  { value: "monthly", label: "Monthly" },
+  { value: "weekly", label: "Weekly" },
+  { value: "daily", label: "Daily" },
+];
 
 const Page = () => {
-  const [symbol, setSymbol] = useState("");
+  const [activeTab, setActiveTab] = useState(COMMODITY_APIS[0].id);
+  const [interval] = useState("monthly");
   const [data, setData] = useState<Record<string, string | number>[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    setData([]);
+    setError(undefined);
+  };
+
+  const formFields = [
+    {
+      name: "interval",
+      label: "Interval",
+      type: "select" as const,
+      required: true,
+      options: INTERVAL_OPTIONS,
+      disabled: true,
+    },
+  ];
+
+  const handleFormSubmit = async (formData: Record<string, string>) => {
     setIsLoading(true);
     setError(undefined);
+    setData([]);
+    const interval = formData.interval;
 
     try {
-      const response = await fetchAlphaVantageData("CURRENCY_EXCHANGE_RATE", {
-        from_currency: symbol,
-        to_currency: "USD",
-      });
+      const api = COMMODITY_APIS.find((c) => c.id === activeTab);
+      if (!api) throw new Error("Invalid commodity API");
+      // @ts-expect-error: Dynamic service method call based on tab selection
+      const response = await AlphaVantageService[api.service](interval);
 
-      const commodityKey = Object.keys(response).find((key) =>
-        key.includes("Price")
-      );
-      if (commodityKey) {
-        const commodityData = response[commodityKey] as CommodityData;
-        const transformedData = Object.entries(commodityData).map(
-          ([symbol, values]) => ({
-            commoditySymbol: symbol,
-            ...values,
-          })
-        );
-        setData(transformedData);
-      } else {
-        setError("No commodity data found in the response");
-      }
+      if (response && response.data && Array.isArray(response.data))
+        setData(response.data);
+      else setError("No data found in the response");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -56,41 +79,50 @@ const Page = () => {
   };
 
   const columns = [
-    { header: "Symbol", accessor: "commoditySymbol" },
-    { header: "Price", accessor: "price" },
+    { header: "Date", accessor: "date" },
+    { header: "Value", accessor: "value" },
   ];
 
   return (
     <PageLayout>
       <SectionHeader
         title="Commodities Data"
-        description="Access real-time commodity prices"
+        description="Access global and individual commodity price indices"
       />
-
-      <form onSubmit={handleSubmit} className="mb-8">
-        <div className="flex gap-4 items-end">
-          <Input
-            label="Commodity Symbol"
-            id="symbol"
-            value={symbol}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSymbol(e.target.value.toUpperCase())
-            }
-            placeholder="e.g., GOLD"
-            required
-          />
-
-          <Button type="submit" isLoading={isLoading}>
-            Fetch Data
-          </Button>
-        </div>
-      </form>
-
+      {/* Tab Navigation */}
+      <div className="mb-6 flex flex-wrap gap-2 overflow-x-auto w-full scrollbar-thin scrollbar-thumb-gray-200">
+        {COMMODITY_APIS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => handleTabClick(tab.id)}
+            className={`min-w-max px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === tab.id
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <Form
+        fields={formFields}
+        onSubmit={handleFormSubmit}
+        submitLabel="Fetch Data"
+        isLoading={isLoading}
+        error={error}
+        className="mb-2 w-full"
+        initialValues={{ interval }}
+      />
+      <p className="text-sm text-gray-500 mb-6">
+        Only monthly data is available for commodity endpoints.
+      </p>
       <Table
         columns={columns}
         data={data}
         isLoading={isLoading}
         error={error}
+        className="w-full"
       />
     </PageLayout>
   );

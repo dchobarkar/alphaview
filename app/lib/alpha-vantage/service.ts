@@ -161,13 +161,73 @@ export const AlphaVantageService = {
   },
 
   // Commodities
-  async getCommodityPrice(symbol: string) {
+  async getWTI(interval: string = "monthly") {
     return fetchData({
-      function: "CURRENCY_EXCHANGE_RATE",
-      from_currency: symbol,
-      to_currency: "USD",
+      function: "WTI",
+      interval,
     });
   },
+  async getBrent(interval: string = "monthly") {
+    return fetchData({
+      function: "BRENT",
+      interval,
+    });
+  },
+  async getNaturalGas(interval: string = "monthly") {
+    return fetchData({
+      function: "NATURAL_GAS",
+      interval,
+    });
+  },
+  async getCopper(interval: string = "monthly") {
+    return fetchData({
+      function: "COPPER",
+      interval,
+    });
+  },
+  async getAluminum(interval: string = "monthly") {
+    return fetchData({
+      function: "ALUMINUM",
+      interval,
+    });
+  },
+  async getWheat(interval: string = "monthly") {
+    return fetchData({
+      function: "WHEAT",
+      interval,
+    });
+  },
+  async getCorn(interval: string = "monthly") {
+    return fetchData({
+      function: "CORN",
+      interval,
+    });
+  },
+  async getCotton(interval: string = "monthly") {
+    return fetchData({
+      function: "COTTON",
+      interval,
+    });
+  },
+  async getSugar(interval: string = "monthly") {
+    return fetchData({
+      function: "SUGAR",
+      interval,
+    });
+  },
+  async getCoffee(interval: string = "monthly") {
+    return fetchData({
+      function: "COFFEE",
+      interval,
+    });
+  },
+  async getAllCommodities(interval: string = "monthly") {
+    return fetchData({
+      function: "ALL_COMMODITIES",
+      interval,
+    });
+  },
+
   // Economic Indicators
   async getRealGDP(interval: string = "quarterly") {
     return fetchData({
@@ -180,6 +240,7 @@ export const AlphaVantageService = {
       function: "INFLATION",
     });
   },
+
   // Technical Indicators
   async getSMA(
     symbol: string,
