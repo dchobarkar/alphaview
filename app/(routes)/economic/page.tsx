@@ -3,51 +3,158 @@
 import { useState } from "react";
 
 import PageLayout from "@/app/components/shared/PageLayout";
+import SectionHeader from "@/app/components/shared/SectionHeader";
 import Table from "@/app/components/ui/Table";
-import { AlphaVantageService } from "@/app/lib/alphaVantage";
+import Form from "@/app/components/ui/Form";
+import { AlphaVantageService } from "@/app/lib/alpha-vantage/service";
+import { EconomicIndicatorResponse } from "@/app/lib/alpha-vantage/types";
 
-interface EconomicData {
-  [key: string]: {
-    indicator: string;
-    value: string;
-  };
-}
+const ECONOMIC_APIS = [
+  {
+    id: "REAL_GDP",
+    label: "Real GDP",
+    service: "getRealGDP",
+    intervals: ["annual", "quarterly"],
+  },
+  {
+    id: "REAL_GDP_PER_CAPITA",
+    label: "Real GDP per Capita",
+    service: "getRealGDPPerCapita",
+    intervals: ["annual", "quarterly"],
+  },
+  {
+    id: "TREASURY_YIELD",
+    label: "Treasury Yield",
+    service: "getTreasuryYield",
+    intervals: ["daily", "weekly", "monthly"],
+  },
+  {
+    id: "FEDERAL_FUNDS_RATE",
+    label: "Federal Funds Rate",
+    service: "getFederalFundsRate",
+    intervals: [],
+  },
+  {
+    id: "CPI",
+    label: "Consumer Price Index (CPI)",
+    service: "getCPI",
+    intervals: ["monthly"],
+  },
+  {
+    id: "INFLATION",
+    label: "Inflation",
+    service: "getInflation",
+    intervals: [],
+  },
+  {
+    id: "RETAIL_SALES",
+    label: "Retail Sales",
+    service: "getRetailSales",
+    intervals: ["monthly"],
+  },
+  {
+    id: "DURABLES",
+    label: "Durable Goods Orders",
+    service: "getDurableGoods",
+    intervals: ["monthly"],
+  },
+  {
+    id: "UNEMPLOYMENT",
+    label: "Unemployment Rate",
+    service: "getUnemployment",
+    intervals: ["monthly"],
+  },
+  {
+    id: "NONFARM_PAYROLL",
+    label: "Nonfarm Payroll",
+    service: "getNonfarmPayroll",
+    intervals: ["monthly"],
+  },
+];
 
-interface ApiResponse {
-  [key: string]: EconomicData | string;
-}
+const INTERVAL_OPTIONS = [
+  { value: "annual", label: "Annual" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "weekly", label: "Weekly" },
+  { value: "daily", label: "Daily" },
+];
 
 const Page = () => {
-  const [indicator, setIndicator] = useState("");
-  const [data, setData] = useState<Record<string, string | number>[]>([]);
+  const [activeTab, setActiveTab] = useState(ECONOMIC_APIS[0].id);
+  const [interval, setInterval] = useState(ECONOMIC_APIS[0].intervals[0] || "");
+  const [data, setData] = useState<{ date: string; value: string }[]>([]);
+  const [meta, setMeta] = useState<{
+    name: string;
+    interval: string;
+    unit: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    const api = ECONOMIC_APIS.find((a) => a.id === tabId);
+    setInterval(api?.intervals[0] || "");
+    setData([]);
+    setMeta(null);
+    setError(undefined);
+  };
+
+  const selectedApi = ECONOMIC_APIS.find((a) => a.id === activeTab);
+
+  const formFields = selectedApi?.intervals.length
+    ? [
+        {
+          name: "interval",
+          label: "Interval",
+          type: "select" as const,
+          required: true,
+          options: INTERVAL_OPTIONS.filter((opt) =>
+            selectedApi.intervals.includes(opt.value)
+          ),
+        },
+      ]
+    : [];
+
+  // Map service names to actual methods for type safety
+  const economicServiceMap = {
+    getRealGDP: AlphaVantageService.getRealGDP,
+    getRealGDPPerCapita: AlphaVantageService.getRealGDPPerCapita,
+    getTreasuryYield: AlphaVantageService.getTreasuryYield,
+    getFederalFundsRate: AlphaVantageService.getFederalFundsRate,
+    getCPI: AlphaVantageService.getCPI,
+    getInflation: AlphaVantageService.getInflation,
+    getRetailSales: AlphaVantageService.getRetailSales,
+    getDurableGoods: AlphaVantageService.getDurableGoods,
+    getUnemployment: AlphaVantageService.getUnemployment,
+    getNonfarmPayroll: AlphaVantageService.getNonfarmPayroll,
+  };
+
+  const handleFormSubmit = async (formData: Record<string, string>) => {
     setIsLoading(true);
     setError(undefined);
-
+    setData([]);
+    setMeta(null);
     try {
-      const service = AlphaVantageService.getInstance();
-      const response: ApiResponse = await service.getEconomicIndicator(
-        indicator
-      );
-
-      const economicKey = Object.keys(response).find((key) =>
-        key.includes("Indicator")
-      );
-      if (economicKey) {
-        const economicData = response[economicKey] as EconomicData;
-        const transformedData = Object.entries(economicData).map(
-          ([indicator, values]) => ({
-            economicIndicator: indicator,
-            ...values,
-          })
-        );
-        setData(transformedData);
+      if (!selectedApi) throw new Error("No indicator selected");
+      const serviceFn =
+        economicServiceMap[
+          selectedApi.service as keyof typeof economicServiceMap
+        ];
+      if (!serviceFn) throw new Error("Service not found");
+      const response: EconomicIndicatorResponse = selectedApi.intervals.length
+        ? await serviceFn(formData.interval)
+        : await serviceFn();
+      if (response && response.data && Array.isArray(response.data)) {
+        setMeta({
+          name: response.name,
+          interval: response.interval,
+          unit: response.unit,
+        });
+        setData(response.data);
       } else {
-        setError("No economic indicator data found in the response");
+        setError("No data found in the response");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -56,52 +163,70 @@ const Page = () => {
     }
   };
 
-  const columns = [
-    { header: "Indicator", accessor: "economicIndicator" },
+  const columns: { header: string; accessor: "date" | "value" }[] = [
+    { header: "Date", accessor: "date" },
     { header: "Value", accessor: "value" },
   ];
 
   return (
-    <PageLayout className="min-h-svh">
-      <div className="p-8">
-        <h1 className="text-4xl font-bold mb-8">Economic Indicators Data</h1>
-
-        <form onSubmit={handleSubmit} className="mb-8">
-          <div className="flex gap-4 items-end">
-            <div>
-              <label
-                htmlFor="indicator"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Economic Indicator
-              </label>
-              <input
-                type="text"
-                id="indicator"
-                value={indicator}
-                onChange={(e) => setIndicator(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="e.g., GDP"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Fetch Data
-            </button>
-          </div>
-        </form>
-
-        <Table
-          columns={columns}
-          data={data}
+    <PageLayout>
+      <SectionHeader
+        title="Economic Indicators Data"
+        description="Access key economic indicators from Alpha Vantage."
+      />
+      {/* Tab Navigation */}
+      <div className="mb-6 flex flex-wrap gap-2 overflow-x-auto w-full scrollbar-thin scrollbar-thumb-gray-200">
+        {ECONOMIC_APIS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => handleTabClick(tab.id)}
+            className={`min-w-max px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === tab.id
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      {formFields.length > 0 && (
+        <Form
+          fields={formFields}
+          onSubmit={handleFormSubmit}
+          submitLabel="Fetch Data"
           isLoading={isLoading}
           error={error}
+          className="mb-2 w-full"
+          initialValues={interval ? { interval } : {}}
         />
-      </div>
+      )}
+      {formFields.length === 0 && (
+        <button
+          onClick={() => handleFormSubmit({})}
+          className="mb-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          disabled={isLoading}
+        >
+          {isLoading ? "Loading..." : "Fetch Data"}
+        </button>
+      )}
+
+      {meta && (
+        <div className="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
+          <div className="font-semibold text-lg">{meta.name}</div>
+          <div className="text-sm text-gray-600">
+            Interval: {meta.interval} | Unit: {meta.unit}
+          </div>
+        </div>
+      )}
+
+      <Table
+        columns={columns}
+        data={data}
+        isLoading={isLoading}
+        error={error}
+        className="w-full"
+      />
     </PageLayout>
   );
 };

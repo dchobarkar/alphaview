@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { EconomicIndicatorResponse } from "./types";
+
 const API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
 const BASE_URL = "https://www.alphavantage.co/query";
 
@@ -229,16 +231,51 @@ export const AlphaVantageService = {
   },
 
   // Economic Indicators
-  async getRealGDP(interval: string = "quarterly") {
-    return fetchData({
-      function: "REAL_GDP",
-      interval,
-    });
+  async getRealGDP(
+    interval: string = "annual"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "REAL_GDP", interval });
   },
-  async getInflation() {
-    return fetchData({
-      function: "INFLATION",
-    });
+  async getRealGDPPerCapita(
+    interval: string = "annual"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "REAL_GDP_PER_CAPITA", interval });
+  },
+  async getTreasuryYield(
+    interval: string = "monthly"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "TREASURY_YIELD", interval });
+  },
+  async getFederalFundsRate(): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "FEDERAL_FUNDS_RATE" });
+  },
+  async getCPI(
+    interval: string = "monthly"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "CPI", interval });
+  },
+  async getInflation(): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "INFLATION" });
+  },
+  async getRetailSales(
+    interval: string = "monthly"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "RETAIL_SALES", interval });
+  },
+  async getDurableGoods(
+    interval: string = "monthly"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "DURABLES", interval });
+  },
+  async getUnemployment(
+    interval: string = "monthly"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "UNEMPLOYMENT", interval });
+  },
+  async getNonfarmPayroll(
+    interval: string = "monthly"
+  ): Promise<EconomicIndicatorResponse> {
+    return fetchData({ function: "NONFARM_PAYROLL", interval });
   },
 
   // Technical Indicators

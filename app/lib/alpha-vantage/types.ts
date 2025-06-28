@@ -264,3 +264,15 @@ export interface Earnings {
   annualEarnings: Array<{ [key: string]: string }>;
   quarterlyEarnings: Array<{ [key: string]: string }>;
 }
+
+export interface EconomicIndicatorData {
+  date: string;
+  value: string;
+}
+
+export interface EconomicIndicatorResponse {
+  name: string;
+  interval: string;
+  unit: string;
+  data: EconomicIndicatorData[];
+}
