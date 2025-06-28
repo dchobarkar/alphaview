@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { EconomicIndicatorResponse } from "./types";
+import { EconomicIndicatorResponse, TechnicalIndicatorResponse } from "./types";
 
 const API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
 const BASE_URL = "https://www.alphavantage.co/query";
@@ -281,34 +281,78 @@ export const AlphaVantageService = {
   // Technical Indicators
   async getSMA(
     symbol: string,
-    interval: string = "daily",
-    timePeriod: number = 20
-  ) {
-    return fetchData({
+    interval: string,
+    timePeriod: number,
+    seriesType: string
+  ): Promise<TechnicalIndicatorResponse> {
+    const raw = await fetchData({
       function: "SMA",
       symbol,
       interval,
-      time_period: timePeriod.toString(),
-      series_type: "close",
+      time_period: String(timePeriod),
+      series_type: seriesType,
     });
+    return parseTechnicalIndicatorResponse(raw, "SMA");
   },
-  async getRSI(
+  async getEMA(
     symbol: string,
-    interval: string = "daily",
-    timePeriod: number = 14
-  ) {
-    return fetchData({
-      function: "RSI",
+    interval: string,
+    timePeriod: number,
+    seriesType: string
+  ): Promise<TechnicalIndicatorResponse> {
+    const raw = await fetchData({
+      function: "EMA",
       symbol,
       interval,
-      time_period: timePeriod.toString(),
-      series_type: "close",
+      time_period: String(timePeriod),
+      series_type: seriesType,
     });
+    return parseTechnicalIndicatorResponse(raw, "EMA");
   },
-  async getEconomicIndicator(indicator: string) {
-    return fetchData({
-      function: indicator,
+  async getWMA(
+    symbol: string,
+    interval: string,
+    timePeriod: number,
+    seriesType: string
+  ): Promise<TechnicalIndicatorResponse> {
+    const raw = await fetchData({
+      function: "WMA",
+      symbol,
+      interval,
+      time_period: String(timePeriod),
+      series_type: seriesType,
     });
+    return parseTechnicalIndicatorResponse(raw, "WMA");
+  },
+  async getDEMA(
+    symbol: string,
+    interval: string,
+    timePeriod: number,
+    seriesType: string
+  ): Promise<TechnicalIndicatorResponse> {
+    const raw = await fetchData({
+      function: "DEMA",
+      symbol,
+      interval,
+      time_period: String(timePeriod),
+      series_type: seriesType,
+    });
+    return parseTechnicalIndicatorResponse(raw, "DEMA");
+  },
+  async getTEMA(
+    symbol: string,
+    interval: string,
+    timePeriod: number,
+    seriesType: string
+  ): Promise<TechnicalIndicatorResponse> {
+    const raw = await fetchData({
+      function: "TEMA",
+      symbol,
+      interval,
+      time_period: String(timePeriod),
+      series_type: seriesType,
+    });
+    return parseTechnicalIndicatorResponse(raw, "TEMA");
   },
 
   async getGlobalQuote(symbol: string) {
@@ -318,3 +362,28 @@ export const AlphaVantageService = {
     });
   },
 };
+
+// Helper to parse technical indicator response
+function parseTechnicalIndicatorResponse(
+  raw: Record<string, any>,
+  key: string
+): TechnicalIndicatorResponse {
+  const metaRaw = raw["Meta Data"] || {};
+  const meta = {
+    symbol: metaRaw["1: Symbol"] || metaRaw["1. Symbol"] || "",
+    indicator: metaRaw["2: Indicator"] || metaRaw["2. Indicator"] || key,
+    lastRefreshed:
+      metaRaw["3: Last Refreshed"] || metaRaw["3. Last Refreshed"] || "",
+    interval: metaRaw["4: Interval"] || metaRaw["4. Interval"] || "",
+    timePeriod: metaRaw["5: Time Period"] || metaRaw["5. Time Period"] || "",
+    seriesType: metaRaw["6: Series Type"] || metaRaw["6. Series Type"] || "",
+    timeZone: metaRaw["7: Time Zone"] || metaRaw["7. Time Zone"] || "",
+  };
+  const dataRaw: Record<string, { [key: string]: string }> =
+    raw[`Technical Analysis: ${key}`] || {};
+  const data = Object.entries(dataRaw).map(([date, obj]) => ({
+    date,
+    value: obj[key] || Object.values(obj)[0] || "",
+  }));
+  return { meta, data };
+}

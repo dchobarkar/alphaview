@@ -276,3 +276,23 @@ export interface EconomicIndicatorResponse {
   unit: string;
   data: EconomicIndicatorData[];
 }
+
+export interface TechnicalIndicatorMeta {
+  symbol: string;
+  indicator: string;
+  lastRefreshed: string;
+  interval: string;
+  timePeriod: string;
+  seriesType: string;
+  timeZone: string;
+}
+
+export interface TechnicalIndicatorData {
+  date: string;
+  value: string;
+}
+
+export interface TechnicalIndicatorResponse {
+  meta: TechnicalIndicatorMeta;
+  data: TechnicalIndicatorData[];
+}
