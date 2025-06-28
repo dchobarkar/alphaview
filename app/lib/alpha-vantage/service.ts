@@ -365,10 +365,11 @@ export const AlphaVantageService = {
 
 // Helper to parse technical indicator response
 function parseTechnicalIndicatorResponse(
-  raw: Record<string, any>,
+  raw: unknown,
   key: string
 ): TechnicalIndicatorResponse {
-  const metaRaw = raw["Meta Data"] || {};
+  const safeRaw = raw as Record<string, unknown>;
+  const metaRaw = (safeRaw["Meta Data"] || {}) as Record<string, string>;
   const meta = {
     symbol: metaRaw["1: Symbol"] || metaRaw["1. Symbol"] || "",
     indicator: metaRaw["2: Indicator"] || metaRaw["2. Indicator"] || key,
@@ -379,9 +380,12 @@ function parseTechnicalIndicatorResponse(
     seriesType: metaRaw["6: Series Type"] || metaRaw["6. Series Type"] || "",
     timeZone: metaRaw["7: Time Zone"] || metaRaw["7. Time Zone"] || "",
   };
-  const dataRaw: Record<string, { [key: string]: string }> =
-    raw[`Technical Analysis: ${key}`] || {};
-  const data = Object.entries(dataRaw).map(([date, obj]) => ({
+  const dataRaw: Record<string, Record<string, string>> = (safeRaw[
+    `Technical Analysis: ${key}`
+  ] || {}) as Record<string, Record<string, string>>;
+  const data = (
+    Object.entries(dataRaw) as [string, Record<string, string>][]
+  ).map(([date, obj]) => ({
     date,
     value: obj[key] || Object.values(obj)[0] || "",
   }));
